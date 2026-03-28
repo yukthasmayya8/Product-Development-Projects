@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and preferences.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "subjects": { "type": "array", "items": { "type": "string" } },
+        "studyPattern": { "type": "string" },
+        "currentMood": { "type": "string" },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "StudySession": {
+      "title": "StudySession",
+      "description": "A single study session record.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "durationMinutes": { "type": "integer" },
+        "mood": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subject", "durationMinutes", "timestamp"]
+    },
+    "Timetable": {
+      "title": "Timetable",
+      "description": "AI-generated study timetable.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "schedule": { "type": "array", "items": { "type": "object" } },
+        "moodContext": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "schedule", "timestamp"]
+    },
+    "MoodLog": {
+      "title": "MoodLog",
+      "description": "User mood history.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "mood": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "mood", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents."
+    },
+    "/studySessions/{sessionId}": {
+      "schema": "StudySession",
+      "description": "Study session records."
+    },
+    "/timetables/{timetableId}": {
+      "schema": "Timetable",
+      "description": "AI-generated timetables."
+    },
+    "/moodLogs/{logId}": {
+      "schema": "MoodLog",
+      "description": "Mood history logs."
+    }
+  }
+}

@@ -1,0 +1,124 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: userId (uid)
+    // Fields:
+    //   - uid: string (required)
+    //   - displayName: string (optional)
+    //   - email: string (required)
+    //   - subjects: list (optional)
+    //   - studyPattern: string (optional)
+    //   - currentMood: string (optional)
+    //   - lastActive: timestamp (optional)
+    //
+    // Collection: studySessions
+    // Document ID: sessionId
+    // Fields:
+    //   - userId: string (required)
+    //   - subject: string (required)
+    //   - durationMinutes: number (required)
+    //   - mood: string (optional)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: timetables
+    // Document ID: timetableId
+    // Fields:
+    //   - userId: string (required)
+    //   - schedule: list (required)
+    //   - moodContext: string (optional)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: moodLogs
+    // Document ID: logId
+    // Fields:
+    //   - userId: string (required)
+    //   - mood: string (required)
+    //   - timestamp: timestamp (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function isRequestOwner() {
+      return isAuthenticated() && request.auth.uid == request.resource.data.userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid is string && data.uid.size() > 0 &&
+             data.email is string && data.email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidStudySession(data) {
+      return data.keys().hasAll(['userId', 'subject', 'durationMinutes', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.subject is string && data.subject.size() > 0 && data.subject.size() < 100 &&
+             data.durationMinutes is number && data.durationMinutes > 0 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidTimetable(data) {
+      return data.keys().hasAll(['userId', 'schedule', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.schedule is list && data.schedule.size() < 50 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidMoodLog(data) {
+      return data.keys().hasAll(['userId', 'mood', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.mood is string && data.mood.size() > 0 && data.mood.size() < 50 &&
+             data.timestamp is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.uid == resource.data.uid;
+    }
+
+    match /studySessions/{sessionId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && isValidStudySession(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /timetables/{timetableId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && isValidTimetable(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /moodLogs/{logId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && isValidMoodLog(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
