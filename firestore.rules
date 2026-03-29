@@ -40,6 +40,84 @@ service cloud.firestore {
     //   - mood: string (required)
     //   - timestamp: timestamp (required)
     //
+    // Collection: flashcards
+    // Document ID: flashcardId
+    // Fields:
+    //   - userId: string (required)
+    //   - subject: string (required)
+    //   - concept: string (required)
+    //   - explanation: string (required)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: quizzes
+    // Document ID: quizId
+    // Fields:
+    //   - userId: string (required)
+    //   - subject: string (required)
+    //   - questions: list (required)
+    //   - score: number (optional)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: screenTimeLogs
+    // Document ID: userId_date
+    // Fields:
+    //   - userId: string (required)
+    //   - screenTime: number (required)
+    //   - date: string (required)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: distractionLogs
+    // Document ID: logId
+    // Fields:
+    //   - userId: string (required)
+    //   - source: string (required)
+    //   - duration: number (optional)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: gameLogs
+    // Document ID: userId_date
+    // Fields:
+    //   - userId: string (required)
+    //   - date: string (required)
+    //   - playedAt: string (required)
+    //
+    // Collection: studyGoals
+    // Document ID: goalId
+    // Fields:
+    //   - userId: string (required)
+    //   - type: string (required)
+    //   - target: number (required)
+    //   - current: number (required)
+    //   - period: string (required)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: achievements
+    // Document ID: achievementId
+    // Fields:
+    //   - userId: string (required)
+    //   - badgeId: string (required)
+    //   - earnedAt: timestamp (required)
+    //
+    // Collection: reminders
+    // Document ID: reminderId
+    // Fields:
+    //   - userId: string (required)
+    //   - subject: string (required)
+    //   - topic: string (optional)
+    //   - time: string (required)
+    //   - days: list (optional)
+    //   - active: bool (required)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: syllabi
+    // Document ID: syllabusId
+    // Fields:
+    //   - userId: string (required)
+    //   - subject: string (required)
+    //   - content: string (required)
+    //   - type: string (required)
+    //   - timestamp: timestamp (required)
+    //
     // ===============================================================
 
     // ===============================================================
@@ -78,7 +156,7 @@ service cloud.firestore {
     function isValidTimetable(data) {
       return data.keys().hasAll(['userId', 'schedule', 'timestamp']) &&
              data.userId is string && data.userId == request.auth.uid &&
-             data.schedule is list && data.schedule.size() < 50 &&
+             data.schedule is list && data.schedule.size() < 100 &&
              data.timestamp is timestamp;
     }
 
@@ -86,6 +164,80 @@ service cloud.firestore {
       return data.keys().hasAll(['userId', 'mood', 'timestamp']) &&
              data.userId is string && data.userId == request.auth.uid &&
              data.mood is string && data.mood.size() > 0 && data.mood.size() < 50 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidFlashcard(data) {
+      return data.keys().hasAll(['userId', 'subject', 'concept', 'explanation', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.subject is string && data.subject.size() > 0 &&
+             data.concept is string && data.concept.size() > 0 &&
+             data.explanation is string && data.explanation.size() > 0 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidQuiz(data) {
+      return data.keys().hasAll(['userId', 'subject', 'questions', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.subject is string && data.subject.size() > 0 &&
+             data.questions is list && data.questions.size() > 0 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidScreenTimeLog(data) {
+      return data.keys().hasAll(['userId', 'screenTime', 'date', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.screenTime is number && data.screenTime >= 0 &&
+             data.date is string && data.date.size() > 0 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidDistractionLog(data) {
+      return data.keys().hasAll(['userId', 'source', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.source is string && data.source.size() > 0 && data.source.size() < 100 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidGameLog(data) {
+      return data.keys().hasAll(['userId', 'date', 'playedAt']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.date is string && data.date.size() > 0 &&
+             data.playedAt is string && data.playedAt.size() > 0;
+    }
+
+    function isValidStudyGoal(data) {
+      return data.keys().hasAll(['userId', 'type', 'target', 'current', 'period', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.type in ['flashcards', 'quiz', 'focusTime', 'sessions'] &&
+             data.target is number && data.target > 0 &&
+             data.current is number && data.current >= 0 &&
+             data.period in ['daily', 'weekly'] &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidAchievement(data) {
+      return data.keys().hasAll(['userId', 'badgeId', 'earnedAt']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.badgeId is string && data.badgeId.size() > 0 &&
+             data.earnedAt is timestamp;
+    }
+
+    function isValidReminder(data) {
+      return data.keys().hasAll(['userId', 'subject', 'time', 'active', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.subject is string && data.subject.size() > 0 &&
+             data.time is string && data.time.size() > 0 &&
+             data.active is bool &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidSyllabus(data) {
+      return data.keys().hasAll(['userId', 'subject', 'content', 'type', 'timestamp']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.subject is string && data.subject.size() > 0 &&
+             data.content is string && data.content.size() > 0 &&
+             data.type in ['text', 'pdf'] &&
              data.timestamp is timestamp;
     }
 
@@ -100,21 +252,81 @@ service cloud.firestore {
     }
 
     match /studySessions/{sessionId} {
-      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && isValidStudySession(request.resource.data);
       allow update, delete: if isAuthenticated() && isDocOwner();
     }
 
     match /timetables/{timetableId} {
-      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && isValidTimetable(request.resource.data);
       allow update, delete: if isAuthenticated() && isDocOwner();
     }
 
     match /moodLogs/{logId} {
-      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && isValidMoodLog(request.resource.data);
       allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /flashcards/{flashcardId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidFlashcard(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /quizzes/{quizId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidQuiz(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /screenTimeLogs/{logId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create, update: if isAuthenticated() && isValidScreenTimeLog(request.resource.data);
+      allow delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /distractionLogs/{logId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidDistractionLog(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /gameLogs/{logId} {
+      allow get: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow list: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidGameLog(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /gameStats/{userId} {
+      allow read: if isAuthenticated() && userId == request.auth.uid;
+      allow write: if isAuthenticated() && userId == request.auth.uid;
+    }
+
+    match /studyGoals/{goalId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidStudyGoal(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner() && isValidStudyGoal(request.resource.data);
+    }
+
+    match /achievements/{achievementId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidAchievement(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /reminders/{reminderId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidReminder(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner() && isValidReminder(request.resource.data);
+    }
+
+    match /syllabi/{syllabusId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidSyllabus(request.resource.data);
+      allow update, delete: if isAuthenticated() && isDocOwner() && isValidSyllabus(request.resource.data);
     }
 
     match /{path=**} {

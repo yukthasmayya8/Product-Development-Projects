@@ -9,11 +9,54 @@
         "displayName": { "type": "string" },
         "email": { "type": "string" },
         "subjects": { "type": "array", "items": { "type": "string" } },
+        "weakSubjects": { "type": "array", "items": { "type": "string" } },
+        "strongSubjects": { "type": "array", "items": { "type": "string" } },
         "studyPattern": { "type": "string" },
         "currentMood": { "type": "string" },
+        "preferredLanguage": { "type": "string" },
+        "timetableDuration": { "type": "string", "enum": ["daily", "weekly", "monthly"] },
+        "streak": { "type": "integer" },
+        "lastStudyDate": { "type": "string", "format": "date-time" },
         "lastActive": { "type": "string", "format": "date-time" }
       },
       "required": ["uid", "email"]
+    },
+    "Flashcard": {
+      "title": "Flashcard",
+      "description": "A study flashcard for memorization.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "concept": { "type": "string" },
+        "explanation": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subject", "concept", "explanation", "timestamp"]
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "description": "A quiz to track study progress.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "concept": { "type": "string" },
+        "questions": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "question": { "type": "string" },
+              "options": { "type": "array", "items": { "type": "string" } },
+              "answer": { "type": "string" }
+            }
+          }
+        },
+        "score": { "type": "integer" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subject", "questions", "timestamp"]
     },
     "StudySession": {
       "title": "StudySession",
@@ -50,6 +93,110 @@
         "timestamp": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "mood", "timestamp"]
+    },
+    "ScreenTimeLog": {
+      "title": "ScreenTimeLog",
+      "description": "Daily screen time log.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "screenTime": { "type": "integer" },
+        "date": { "type": "string", "format": "date" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "screenTime", "date", "timestamp"]
+    },
+    "DistractionLog": {
+      "title": "DistractionLog",
+      "description": "Log of specific distractions.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "source": { "type": "string" },
+        "duration": { "type": "integer" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "source", "timestamp"]
+    },
+    "GameStats": {
+      "title": "GameStats",
+      "description": "User game statistics and records.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "sudoku": {
+          "type": "object",
+          "properties": {
+            "gamesPlayed": { "type": "integer" },
+            "bestTimeEasy": { "type": "integer" },
+            "bestTimeMedium": { "type": "integer" },
+            "bestTimeHard": { "type": "integer" }
+          }
+        },
+        "focusFlow": {
+          "type": "object",
+          "properties": {
+            "gamesPlayed": { "type": "integer" },
+            "bestTimeEasy": { "type": "integer" },
+            "bestTimeMedium": { "type": "integer" },
+            "bestTimeHard": { "type": "integer" }
+          }
+        }
+      },
+      "required": ["userId"]
+    },
+    "StudyGoal": {
+      "title": "StudyGoal",
+      "description": "User study goals and progress.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["flashcards", "quiz", "focusTime", "sessions"] },
+        "target": { "type": "integer" },
+        "current": { "type": "integer" },
+        "period": { "type": "string", "enum": ["daily", "weekly"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "target", "current", "period", "timestamp"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "User earned achievement badges.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "badgeId": { "type": "string" },
+        "earnedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "badgeId", "earnedAt"]
+    },
+    "Reminder": {
+      "title": "Reminder",
+      "description": "Custom study reminders.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "topic": { "type": "string" },
+        "time": { "type": "string" },
+        "days": { "type": "array", "items": { "type": "string" } },
+        "active": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subject", "time", "active", "timestamp"]
+    },
+    "Syllabus": {
+      "title": "Syllabus",
+      "description": "User uploaded subject syllabus.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "pdf"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subject", "content", "type", "timestamp"]
     }
   },
   "firestore": {
@@ -68,6 +215,42 @@
     "/moodLogs/{logId}": {
       "schema": "MoodLog",
       "description": "Mood history logs."
+    },
+    "/flashcards/{flashcardId}": {
+      "schema": "Flashcard",
+      "description": "User flashcards."
+    },
+    "/quizzes/{quizId}": {
+      "schema": "Quiz",
+      "description": "User study quizzes."
+    },
+    "/screenTimeLogs/{logId}": {
+      "schema": "ScreenTimeLog",
+      "description": "Daily screen time logs."
+    },
+    "/distractionLogs/{logId}": {
+      "schema": "DistractionLog",
+      "description": "Specific distraction logs."
+    },
+    "/gameStats/{userId}": {
+      "schema": "GameStats",
+      "description": "User game statistics."
+    },
+    "/studyGoals/{goalId}": {
+      "schema": "StudyGoal",
+      "description": "User study goals."
+    },
+    "/achievements/{achievementId}": {
+      "schema": "Achievement",
+      "description": "User earned badges."
+    },
+    "/reminders/{reminderId}": {
+      "schema": "Reminder",
+      "description": "Custom study reminders."
+    },
+    "/syllabi/{syllabusId}": {
+      "schema": "Syllabus",
+      "description": "User subject syllabi."
     }
   }
 }

@@ -2,19 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db, collection, addDoc, Timestamp, handleFirestoreError, OperationType } from '../firebase';
+import { translations } from '../lib/translations';
 
 interface TimerProps {
   userId: string;
   subject: string;
   onSessionComplete: (duration: number) => void;
+  language?: string;
 }
 
-export default function Timer({ userId, subject, onSessionComplete }: TimerProps) {
+export default function Timer({ userId, subject, onSessionComplete, language = 'English' }: TimerProps) {
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes default
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [totalSeconds, setTotalSeconds] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const t = translations[language] || translations.English;
 
   useEffect(() => {
     if (isActive && !isPaused && timeLeft > 0) {
@@ -77,64 +80,112 @@ export default function Timer({ userId, subject, onSessionComplete }: TimerProps
   };
 
   return (
-    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-[#1a1a1a]/5 flex flex-col items-center">
-      <h3 className="text-xs uppercase tracking-[0.2em] opacity-50 mb-6 font-sans font-bold">Focus Timer</h3>
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="glass-surface-vibrant rounded-[50px] p-12 flex flex-col items-center relative overflow-hidden group border border-white/10 shadow-2xl"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-[#ff4e00]/10 via-transparent to-purple-500/10 opacity-50 group-hover:opacity-100 transition-opacity" />
       
-      <div className="relative w-64 h-64 flex items-center justify-center">
-        <svg className="absolute inset-0 w-full h-full -rotate-90">
-          <circle
-            cx="128"
-            cy="128"
-            r="120"
-            fill="none"
-            stroke="#1a1a1a"
-            strokeWidth="2"
-            strokeDasharray="753.98"
-            strokeDashoffset={753.98 * (1 - timeLeft / (25 * 60))}
-            className="transition-all duration-1000 ease-linear opacity-10"
-          />
-        </svg>
+      <div className="relative z-10 text-center">
+        <h3 className="text-[10px] uppercase tracking-[0.4em] opacity-40 mb-10 font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">{t.focusEngine}</h3>
         
-        <div className="text-7xl font-light tracking-tighter tabular-nums">
-          {formatTime(timeLeft)}
+        <div className="relative w-80 h-80 flex items-center justify-center">
+          <svg className="absolute inset-0 w-full h-full -rotate-90">
+            <circle
+              cx="160"
+              cy="160"
+              r="150"
+              fill="none"
+              stroke="white"
+              strokeWidth="1"
+              className="opacity-5"
+            />
+            <motion.circle
+              cx="160"
+              cy="160"
+              r="150"
+              fill="none"
+              stroke="url(#timer-gradient)"
+              strokeWidth="4"
+              strokeDasharray="942.5"
+              animate={{ strokeDashoffset: 942.5 * (1 - timeLeft / (25 * 60)) }}
+              transition={{ duration: 1, ease: "linear" }}
+              className="drop-shadow-[0_0_15px_rgba(255,78,0,0.4)]"
+              strokeLinecap="round"
+            />
+            <defs>
+              <linearGradient id="timer-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ff4e00" />
+                <stop offset="100%" stopColor="#9333ea" />
+              </linearGradient>
+            </defs>
+          </svg>
+          
+          <div className="text-9xl font-display tracking-tighter tabular-nums text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/40 drop-shadow-2xl">
+            {formatTime(timeLeft)}
+          </div>
+        </div>
+
+        <div className="flex gap-8 mt-14 relative z-10">
+          {!isActive ? (
+            <motion.button
+              whileHover={{ scale: 1.1, boxShadow: "0 0 40px rgba(255,78,0,0.6)" }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleStart}
+              aria-label={t.startTimer}
+              className="w-20 h-20 bg-gradient-to-br from-[#ff4e00] to-[#f27d26] text-white rounded-full flex items-center justify-center shadow-2xl glow-orange transition-all"
+            >
+              <Play size={32} fill="currentColor" />
+            </motion.button>
+          ) : (
+            <>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handlePause}
+                aria-label={isPaused ? t.resumeTimer : t.pauseTimer}
+                className="w-20 h-20 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center border border-white/10 transition-all backdrop-blur-xl"
+              >
+                {isPaused ? <Play size={32} className="text-green-400" /> : <Pause size={32} className="text-yellow-400" />}
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: -180 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleReset}
+                aria-label={t.resetTimer}
+                className="w-20 h-20 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center border border-white/10 transition-all backdrop-blur-xl"
+              >
+                <RotateCcw size={32} className="text-blue-400" />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1, boxShadow: "0 0 40px rgba(34,197,94,0.4)" }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleComplete}
+                aria-label={t.completeSession}
+                className="w-20 h-20 bg-gradient-to-br from-green-600 to-green-400 text-white rounded-full flex items-center justify-center shadow-2xl transition-all"
+              >
+                <CheckCircle size={32} />
+              </motion.button>
+            </>
+          )}
+        </div>
+        
+        <div className="mt-10 flex flex-col items-center gap-2">
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-white/40">
+            {isActive ? `${t.engaged}:` : t.awaitingCommand}
+          </p>
+          {isActive && (
+            <motion.span 
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xs font-bold uppercase tracking-widest text-[#ff4e00]"
+            >
+              {subject}
+            </motion.span>
+          )}
         </div>
       </div>
-
-      <div className="flex gap-4 mt-8">
-        {!isActive ? (
-          <button
-            onClick={handleStart}
-            className="w-14 h-14 bg-[#5A5A40] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
-          >
-            <Play size={24} fill="currentColor" />
-          </button>
-        ) : (
-          <>
-            <button
-              onClick={handlePause}
-              className="w-14 h-14 bg-white border border-[#1a1a1a]/10 rounded-full flex items-center justify-center hover:bg-[#1a1a1a]/5 transition-colors"
-            >
-              {isPaused ? <Play size={24} /> : <Pause size={24} />}
-            </button>
-            <button
-              onClick={handleReset}
-              className="w-14 h-14 bg-white border border-[#1a1a1a]/10 rounded-full flex items-center justify-center hover:bg-[#1a1a1a]/5 transition-colors"
-            >
-              <RotateCcw size={24} />
-            </button>
-            <button
-              onClick={handleComplete}
-              className="w-14 h-14 bg-[#5A5A40] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
-            >
-              <CheckCircle size={24} />
-            </button>
-          </>
-        )}
-      </div>
-      
-      <p className="mt-6 text-sm opacity-40 italic">
-        {isActive ? `Studying ${subject}...` : 'Ready to focus?'}
-      </p>
-    </div>
+    </motion.div>
   );
 }
