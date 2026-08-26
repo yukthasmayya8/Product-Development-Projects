@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
 interface SkeletonProps {
   className?: string;
 }
 
-export const Skeleton = ({ className = '' }: SkeletonProps) => {
+export const Skeleton = ({ className = "" }: SkeletonProps) => {
   return (
     <div className={`animate-pulse bg-white/5 rounded-2xl ${className}`} />
   );
@@ -23,8 +23,11 @@ export const CardSkeleton = () => (
 
 export const ListSkeleton = () => (
   <div className="space-y-4">
-    {[1, 2, 3].map(i => (
-      <div key={i} className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10">
+    {[1, 2, 3].map((i) => (
+      <div
+        key={i}
+        className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10"
+      >
         <Skeleton className="w-10 h-10 rounded-xl" />
         <div className="flex-1 space-y-2">
           <Skeleton className="w-1/3 h-4" />

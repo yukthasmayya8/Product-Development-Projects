@@ -1,5 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 interface Props {
   children?: ReactNode;
@@ -14,7 +14,7 @@ interface State {
 export default class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
-    error: null
+    error: null,
   };
 
   public static getDerivedStateFromError(error: Error): State {
@@ -22,7 +22,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error:', error, errorInfo);
+    console.error("Uncaught error:", error, errorInfo);
   }
 
   public render() {
@@ -36,9 +36,12 @@ export default class ErrorBoundary extends Component<Props, State> {
           <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mb-6 border border-red-500/30 glow-orange">
             <AlertCircle size={40} className="text-red-500" />
           </div>
-          <h2 className="text-2xl font-display uppercase tracking-tighter mb-4">Something went wrong</h2>
+          <h2 className="text-2xl font-display uppercase tracking-tighter mb-4">
+            Something went wrong
+          </h2>
           <p className="text-sm opacity-60 max-w-md mb-8 leading-relaxed">
-            An unexpected error occurred while rendering this component. Our team has been notified.
+            An unexpected error occurred while rendering this component. Our
+            team has been notified.
           </p>
           <button
             onClick={() => window.location.reload()}

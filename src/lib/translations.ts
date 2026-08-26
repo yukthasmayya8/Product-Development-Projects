@@ -47,8 +47,10 @@ export const translations: Record<string, any> = {
     logScreenTime: "Log Screen Time",
     rewardUnlocked: "Reward Unlocked!",
     betterYouMaster: "BetterYou Master",
-    betterYouMasterDesc: "Your focus has transcended your digital distractions today.",
-    appreciation: "Incredible discipline. You are mastering your digital environment.",
+    betterYouMasterDesc:
+      "Your focus has transcended your digital distractions today.",
+    appreciation:
+      "Incredible discipline. You are mastering your digital environment.",
     enterScreenTime: "Enter today's total screen time (minutes)",
     sessionLogged: "Session Logged",
     settings: "Settings",
@@ -68,7 +70,7 @@ export const translations: Record<string, any> = {
     patterns: {
       deep: "Deep Work",
       balanced: "Balanced",
-      light: "Light Study"
+      light: "Light Study",
     },
     moods: {
       Energetic: "Energetic",
@@ -78,7 +80,7 @@ export const translations: Record<string, any> = {
       Tired: "Tired",
       Sleepy: "Sleepy",
       Stressed: "Stressed",
-      Calm: "Calm"
+      Calm: "Calm",
     },
     editProfile: "Edit Profile & Syllabus",
     refinePath: "Refine Your Path",
@@ -137,7 +139,7 @@ export const translations: Record<string, any> = {
     examFocus: "Exam Focus (Prioritize Important Topics)",
     masteryMode: "Mastery Mode (One at a time)",
     nextSessionIn: "Next Session In",
-    timeRemaining: "Time Remaining"
+    timeRemaining: "Time Remaining",
   },
   Kannada: {
     enterSanctuary: "ಗರ್ಭಗುಡಿಯನ್ನು ಪ್ರವೇಶಿಸಿ",
@@ -188,7 +190,8 @@ export const translations: Record<string, any> = {
     rewardUnlocked: "ಬಹುಮಾನ ಅನ್ಲಾಕ್ ಆಗಿದೆ!",
     betterYouMaster: "ಬೆಟರ್ ಯು ಮಾಸ್ಟರ್",
     betterYouMasterDesc: "ಇಂದು ನಿಮ್ಮ ಗಮನವು ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಗೊಂದಲಗಳನ್ನು ಮೀರಿದೆ.",
-    appreciation: "ಅದ್ಭುತ ಶಿಸ್ತು. ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಪರಿಸರವನ್ನು ನೀವು ಕರಗತ ಮಾಡಿಕೊಳ್ಳುತ್ತಿದ್ದೀರಿ.",
+    appreciation:
+      "ಅದ್ಭುತ ಶಿಸ್ತು. ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಪರಿಸರವನ್ನು ನೀವು ಕರಗತ ಮಾಡಿಕೊಳ್ಳುತ್ತಿದ್ದೀರಿ.",
     enterScreenTime: "ಇಂದಿನ ಒಟ್ಟು ಸ್ಕ್ರೀನ್ ಸಮಯವನ್ನು ನಮೂದಿಸಿ (ನಿಮಿಷಗಳು)",
     sessionLogged: "ಸೆಷನ್ ದಾಖಲಿಸಲಾಗಿದೆ",
     settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
@@ -208,7 +211,7 @@ export const translations: Record<string, any> = {
     patterns: {
       deep: "ಗಾಢ ಕೆಲಸ",
       balanced: "ಸಮತೋಲಿತ",
-      light: "ಹಗುರ ಅಧ್ಯಯನ"
+      light: "ಹಗುರ ಅಧ್ಯಯನ",
     },
     moods: {
       Energetic: "ಉತ್ಸಾಹಭರಿತ",
@@ -218,7 +221,7 @@ export const translations: Record<string, any> = {
       Tired: "ದಣಿದ",
       Sleepy: "ನಿದ್ರೆ",
       Stressed: "ಒತ್ತಡಕ್ಕೊಳಗಾದ",
-      Calm: "ಶಾಂತ"
+      Calm: "ಶಾಂತ",
     },
     editProfile: "ಪ್ರೊಫೈಲ್ ಮತ್ತು ಪಠ್ಯಕ್ರಮವನ್ನು ಸಂಪಾದಿಸಿ",
     refinePath: "ನಿಮ್ಮ ಮಾರ್ಗವನ್ನು ಪರಿಷ್ಕರಿಸಿ",
@@ -277,7 +280,7 @@ export const translations: Record<string, any> = {
     examFocus: "ಪರೀಕ್ಷೆಯ ಗಮನ (ಪ್ರಮುಖ ವಿಷಯಗಳಿಗೆ ಆದ್ಯತೆ ನೀಡಿ)",
     masteryMode: "ಮಾಸ್ಟರಿ ಮೋಡ್ (ಒಂದೊಂದಾಗಿ)",
     nextSessionIn: "ಮುಂದಿನ ಸೆಷನ್",
-    timeRemaining: "ಉಳಿದಿರುವ ಸಮಯ"
+    timeRemaining: "ಉಳಿದಿರುವ ಸಮಯ",
   },
   Hindi: {
     enterSanctuary: "गर्भगृह में प्रवेश करें",
@@ -327,8 +330,10 @@ export const translations: Record<string, any> = {
     logScreenTime: "स्क्रीन समय दर्ज करें",
     rewardUnlocked: "पुरस्कार अनलॉक!",
     betterYouMaster: "बेटर यू मास्टर",
-    betterYouMasterDesc: "आज आपके फोकस ने आपके डिजिटल विकर्षणों को पीछे छोड़ दिया है।",
-    appreciation: "अविश्वसनीय अनुशासन। आप अपने डिजिटल वातावरण में महारत हासिल कर रहे हैं।",
+    betterYouMasterDesc:
+      "आज आपके फोकस ने आपके डिजिटल विकर्षणों को पीछे छोड़ दिया है।",
+    appreciation:
+      "अविश्वसनीय अनुशासन। आप अपने डिजिटल वातावरण में महारत हासिल कर रहे हैं।",
     enterScreenTime: "आज का कुल स्क्रीन समय दर्ज करें (मिनट)",
     sessionLogged: "सत्र दर्ज किया गया",
     settings: "सेटिंग्स",
@@ -348,7 +353,7 @@ export const translations: Record<string, any> = {
     patterns: {
       deep: "गहन कार्य",
       balanced: "संतुलित",
-      light: "हल्का अध्ययन"
+      light: "हल्का अध्ययन",
     },
     moods: {
       Energetic: "ऊर्जावान",
@@ -358,7 +363,7 @@ export const translations: Record<string, any> = {
       Tired: "थका हुआ",
       Sleepy: "नींद",
       Stressed: "तनावग्रस्त",
-      Calm: "शांत"
+      Calm: "शांत",
     },
     editProfile: "प्रोफ़ाइल और पाठ्यक्रम संपादित करें",
     refinePath: "अपना पथ परिष्कृत करें",
@@ -417,6 +422,6 @@ export const translations: Record<string, any> = {
     examFocus: "परीक्षा फोकस (महत्वपूर्ण विषयों को प्राथमिकता दें)",
     masteryMode: "मास्टरी मोड (एक समय में एक)",
     nextSessionIn: "अगला सत्र",
-    timeRemaining: "शेष समय"
-  }
+    timeRemaining: "शेष समय",
+  },
 };

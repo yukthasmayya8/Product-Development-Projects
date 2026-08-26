@@ -1,9 +1,26 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Smartphone, Plus, X, Instagram, Youtube, MessageCircle, Gamepad2, MoreHorizontal, RefreshCw } from 'lucide-react';
-import { db, collection, addDoc, Timestamp, handleFirestoreError, OperationType } from '../firebase';
-import { translations } from '../lib/translations';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Smartphone,
+  Plus,
+  X,
+  Instagram,
+  Youtube,
+  MessageCircle,
+  Gamepad2,
+  MoreHorizontal,
+  RefreshCw,
+} from "lucide-react";
+import {
+  db,
+  collection,
+  addDoc,
+  Timestamp,
+  handleFirestoreError,
+  OperationType,
+} from "@/firebase";
+import { translations } from "@/lib/translations";
+import { toast } from "sonner";
 
 interface DistractionLoggerProps {
   userId: string;
@@ -11,33 +28,46 @@ interface DistractionLoggerProps {
 }
 
 const COMMON_DISTRACTIONS = [
-  { id: 'instagram', icon: Instagram, label: 'Instagram', color: 'text-pink-500' },
-  { id: 'youtube', icon: Youtube, label: 'YouTube', color: 'text-red-500' },
-  { id: 'whatsapp', icon: MessageCircle, label: 'WhatsApp', color: 'text-green-500' },
-  { id: 'gaming', icon: Gamepad2, label: 'Gaming', color: 'text-blue-500' },
+  {
+    id: "instagram",
+    icon: Instagram,
+    label: "Instagram",
+    color: "text-pink-500",
+  },
+  { id: "youtube", icon: Youtube, label: "YouTube", color: "text-red-500" },
+  {
+    id: "whatsapp",
+    icon: MessageCircle,
+    label: "WhatsApp",
+    color: "text-green-500",
+  },
+  { id: "gaming", icon: Gamepad2, label: "Gaming", color: "text-blue-500" },
 ];
 
-export default function DistractionLogger({ userId, language = 'English' }: DistractionLoggerProps) {
+export default function DistractionLogger({
+  userId,
+  language = "English",
+}: DistractionLoggerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [customSource, setCustomSource] = useState('');
-  const [duration, setDuration] = useState('15');
+  const [customSource, setCustomSource] = useState("");
+  const [duration, setDuration] = useState("15");
   const [isSaving, setIsSaving] = useState(false);
   const t = translations[language] || translations.English;
 
   const logDistraction = async (source: string) => {
     setIsSaving(true);
     try {
-      await addDoc(collection(db, 'distractionLogs'), {
+      await addDoc(collection(db, "distractionLogs"), {
         userId,
         source,
         duration: parseInt(duration) || 0,
-        timestamp: Timestamp.now()
+        timestamp: Timestamp.now(),
       });
       toast.success(`Logged distraction: ${source}`);
       setIsExpanded(false);
-      setCustomSource('');
+      setCustomSource("");
     } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, 'distractionLogs');
+      handleFirestoreError(error, OperationType.CREATE, "distractionLogs");
     } finally {
       setIsSaving(false);
     }
@@ -50,8 +80,13 @@ export default function DistractionLogger({ userId, language = 'English' }: Dist
         onClick={() => setIsExpanded(true)}
         className="flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all group"
       >
-        <Smartphone size={16} className="text-[#ff4e00] group-hover:scale-110 transition-transform" />
-        <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Log Distraction</span>
+        <Smartphone
+          size={16}
+          className="text-[#ff4e00] group-hover:scale-110 transition-transform"
+        />
+        <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">
+          Log Distraction
+        </span>
         <Plus size={14} className="opacity-20" />
       </motion.button>
 
@@ -74,9 +109,14 @@ export default function DistractionLogger({ userId, language = 'English' }: Dist
                   <div className="p-2.5 bg-[#ff4e00]/10 rounded-2xl border border-[#ff4e00]/20">
                     <Smartphone size={20} className="text-[#ff4e00]" />
                   </div>
-                  <h3 className="text-lg font-display uppercase tracking-tighter">Identify the Noise</h3>
+                  <h3 className="text-lg font-display uppercase tracking-tighter">
+                    Identify the Noise
+                  </h3>
                 </div>
-                <button onClick={() => setIsExpanded(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                <button
+                  onClick={() => setIsExpanded(false)}
+                  className="p-2 hover:bg-white/5 rounded-full transition-colors"
+                >
                   <X size={20} className="opacity-20" />
                 </button>
               </div>
@@ -89,16 +129,30 @@ export default function DistractionLogger({ userId, language = 'English' }: Dist
                     disabled={isSaving}
                     className="flex flex-col items-center gap-3 p-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-[32px] transition-all group disabled:opacity-50"
                   >
-                    {isSaving ? <RefreshCw size={24} className="animate-spin opacity-40" /> : <d.icon size={24} className={`${d.color} group-hover:scale-110 transition-transform`} />}
-                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">{d.label}</span>
+                    {isSaving ? (
+                      <RefreshCw
+                        size={24}
+                        className="animate-spin opacity-40"
+                      />
+                    ) : (
+                      <d.icon
+                        size={24}
+                        className={`${d.color} group-hover:scale-110 transition-transform`}
+                      />
+                    )}
+                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
+                      {d.label}
+                    </span>
                   </button>
                 ))}
               </div>
 
               <div className="flex items-center gap-4 mb-8">
-                <span className="text-[10px] font-bold uppercase tracking-widest opacity-30">Estimated Duration (min)</span>
-                <input 
-                  type="number" 
+                <span className="text-[10px] font-bold uppercase tracking-widest opacity-30">
+                  Estimated Duration (min)
+                </span>
+                <input
+                  type="number"
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
                   className="w-20 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#ff4e00]"
@@ -125,7 +179,8 @@ export default function DistractionLogger({ userId, language = 'English' }: Dist
               </div>
 
               <p className="mt-8 text-[10px] text-center opacity-40 italic leading-relaxed">
-                "Awareness is the first step towards mastery. By logging your distractions, you strip them of their power."
+                "Awareness is the first step towards mastery. By logging your
+                distractions, you strip them of their power."
               </p>
             </motion.div>
           </>

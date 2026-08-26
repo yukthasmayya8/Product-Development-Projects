@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, Plus, Trash2, BookOpen, Save, Sparkles, Brain, Smartphone } from 'lucide-react';
-import { db, doc, setDoc, handleFirestoreError, OperationType } from '../firebase';
-import { translations } from '../lib/translations';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  X,
+  Plus,
+  Trash2,
+  BookOpen,
+  Save,
+  Sparkles,
+  Brain,
+  Smartphone,
+} from "lucide-react";
+import {
+  db,
+  doc,
+  setDoc,
+  handleFirestoreError,
+  OperationType,
+} from "@/firebase";
+import { translations } from "@/lib/translations";
 
 interface ProfileSettingsProps {
   userId: string;
@@ -12,22 +27,30 @@ interface ProfileSettingsProps {
   language?: string;
 }
 
-export default function ProfileSettings({ userId, userData, onClose, onUpdate, language = 'English' }: ProfileSettingsProps) {
+export default function ProfileSettings({
+  userId,
+  userData,
+  onClose,
+  onUpdate,
+  language = "English",
+}: ProfileSettingsProps) {
   const [subjects, setSubjects] = useState<string[]>(userData?.subjects || []);
-  const [syllabus, setSyllabus] = useState<Record<string, string>>(userData?.syllabus || {});
-  const [newSubject, setNewSubject] = useState('');
+  const [syllabus, setSyllabus] = useState<Record<string, string>>(
+    userData?.syllabus || {},
+  );
+  const [newSubject, setNewSubject] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const t = translations[language] || translations.English;
 
   const handleAddSubject = () => {
     if (newSubject && !subjects.includes(newSubject)) {
       setSubjects([...subjects, newSubject]);
-      setNewSubject('');
+      setNewSubject("");
     }
   };
 
   const handleRemoveSubject = (subject: string) => {
-    setSubjects(subjects.filter(s => s !== subject));
+    setSubjects(subjects.filter((s) => s !== subject));
     const newSyllabus = { ...syllabus };
     delete newSyllabus[subject];
     setSyllabus(newSyllabus);
@@ -44,9 +67,9 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
         ...userData,
         subjects,
         syllabus,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
-      await setDoc(doc(db, 'users', userId), newData, { merge: true });
+      await setDoc(doc(db, "users", userId), newData, { merge: true });
       onUpdate(newData);
       onClose();
     } catch (error) {
@@ -74,11 +97,18 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
               <Sparkles size={24} />
             </div>
             <div>
-              <h2 className="text-2xl font-display uppercase tracking-tighter">{t.refinePath}</h2>
-              <p className="text-[10px] uppercase tracking-widest font-bold opacity-40">{t.updateSyllabus}</p>
+              <h2 className="text-2xl font-display uppercase tracking-tighter">
+                {t.refinePath}
+              </h2>
+              <p className="text-[10px] uppercase tracking-widest font-bold opacity-40">
+                {t.updateSyllabus}
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white/5 rounded-full transition-colors"
+          >
             <X size={24} className="opacity-40" />
           </button>
         </div>
@@ -88,9 +118,11 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
           <section>
             <div className="flex items-center gap-3 mb-6">
               <BookOpen size={18} className="text-[#ff4e00]" />
-              <h3 className="text-sm font-bold uppercase tracking-widest">{t.activeSubjects}</h3>
+              <h3 className="text-sm font-bold uppercase tracking-widest">
+                {t.activeSubjects}
+              </h3>
             </div>
-            
+
             <div className="flex gap-4 mb-6">
               <input
                 type="text"
@@ -98,7 +130,7 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
                 onChange={(e) => setNewSubject(e.target.value)}
                 placeholder={t.domainName}
                 className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#ff4e00] transition-colors"
-                onKeyPress={(e) => e.key === 'Enter' && handleAddSubject()}
+                onKeyPress={(e) => e.key === "Enter" && handleAddSubject()}
               />
               <button
                 onClick={handleAddSubject}
@@ -109,10 +141,18 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
             </div>
 
             <div className="flex flex-wrap gap-3">
-              {subjects.map(subject => (
-                <div key={subject} className="flex items-center gap-3 px-5 py-3 bg-[#ff4e00]/10 border border-[#ff4e00]/20 rounded-2xl group">
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#ff4e00]">{subject}</span>
-                  <button onClick={() => handleRemoveSubject(subject)} className="opacity-40 hover:opacity-100 transition-opacity">
+              {subjects.map((subject) => (
+                <div
+                  key={subject}
+                  className="flex items-center gap-3 px-5 py-3 bg-[#ff4e00]/10 border border-[#ff4e00]/20 rounded-2xl group"
+                >
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#ff4e00]">
+                    {subject}
+                  </span>
+                  <button
+                    onClick={() => handleRemoveSubject(subject)}
+                    className="opacity-40 hover:opacity-100 transition-opacity"
+                  >
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -124,16 +164,22 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
           <section>
             <div className="flex items-center gap-3 mb-6">
               <Brain size={18} className="text-[#ff4e00]" />
-              <h3 className="text-sm font-bold uppercase tracking-widest">{t.detailedSyllabus}</h3>
+              <h3 className="text-sm font-bold uppercase tracking-widest">
+                {t.detailedSyllabus}
+              </h3>
             </div>
-            
+
             <div className="space-y-6">
-              {subjects.map(subject => (
+              {subjects.map((subject) => (
                 <div key={subject} className="space-y-3">
-                  <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-2">{subject}</label>
+                  <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-2">
+                    {subject}
+                  </label>
                   <textarea
-                    value={syllabus[subject] || ''}
-                    onChange={(e) => handleSyllabusChange(subject, e.target.value)}
+                    value={syllabus[subject] || ""}
+                    onChange={(e) =>
+                      handleSyllabusChange(subject, e.target.value)
+                    }
                     placeholder={`Enter topics for ${subject}...`}
                     className="w-full h-32 bg-white/5 border border-white/10 rounded-[32px] p-6 text-sm outline-none focus:border-[#ff4e00] transition-colors resize-none"
                   />
@@ -148,10 +194,14 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
               <Smartphone size={20} className="text-[#ff4e00]" />
             </div>
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#ff4e00] mb-2">{t.realisticPlanning}</h4>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#ff4e00] mb-2">
+                {t.realisticPlanning}
+              </h4>
               <p className="text-[11px] leading-relaxed opacity-60 italic">
-                "Your timetable will be automatically adjusted based on your recent screen usage and distraction patterns. 
-                If you've been struggling with focus, we'll suggest shorter, more intense study blocks to prevent burnout."
+                "Your timetable will be automatically adjusted based on your
+                recent screen usage and distraction patterns. If you've been
+                struggling with focus, we'll suggest shorter, more intense study
+                blocks to prevent burnout."
               </p>
             </div>
           </div>
@@ -162,14 +212,16 @@ export default function ProfileSettings({ userId, userData, onClose, onUpdate, l
             onClick={onClose}
             className="px-8 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity"
           >
-            {t.cancel || 'Cancel'}
+            {t.cancel || "Cancel"}
           </button>
           <button
             onClick={handleSave}
             disabled={isSaving}
             className="flex items-center gap-3 px-10 py-4 bg-[#ff4e00] text-white rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-lg hover:scale-105 transition-all disabled:opacity-50"
           >
-            {isSaving ? 'Saving...' : (
+            {isSaving ? (
+              "Saving..."
+            ) : (
               <>
                 <Save size={16} />
                 {t.saveAndRegenerate}

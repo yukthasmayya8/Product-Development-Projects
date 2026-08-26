@@ -2,7 +2,11 @@ import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
-export async function generateMotivation(mood: string, studyHistory: any[], language: string = 'English') {
+export async function generateMotivation(
+  mood: string,
+  studyHistory: any[],
+  language: string = "English",
+) {
   const prompt = `The student is currently feeling "${mood}". 
   Their recent study history includes: ${JSON.stringify(studyHistory)}.
   The student's preferred language is "${language}".
@@ -28,7 +32,8 @@ export async function generateMotivation(mood: string, studyHistory: any[], lang
     model: "gemini-3-flash-preview",
     contents: prompt,
     config: {
-      systemInstruction: "You are a supportive and wise study mentor. You provide extremely short, punchy, and profound quotes from ancient Indian wisdom. You always respond in the user's preferred language.",
+      systemInstruction:
+        "You are a supportive and wise study mentor. You provide extremely short, punchy, and profound quotes from ancient Indian wisdom. You always respond in the user's preferred language.",
     },
   });
 
@@ -36,17 +41,17 @@ export async function generateMotivation(mood: string, studyHistory: any[], lang
 }
 
 export async function generateTimetable(
-  mood: string, 
-  subjects: string[], 
-  weakSubjects: string[], 
-  strongSubjects: string[], 
-  pattern: string, 
-  duration: string = 'daily', 
+  mood: string,
+  subjects: string[],
+  weakSubjects: string[],
+  strongSubjects: string[],
+  pattern: string,
+  duration: string = "daily",
   focusSubject?: string,
-  language: string = 'English',
+  language: string = "English",
   syllabus: Record<string, string> = {},
   distractionLogs: any[] = [],
-  studyMode: 'exam' | 'mastery' = 'exam'
+  studyMode: "exam" | "mastery" = "exam",
 ) {
   const prompt = `Create a study timetable for a student who is feeling "${mood}". 
   Subjects to study: ${subjects.join(", ")}. 
@@ -55,7 +60,7 @@ export async function generateTimetable(
   Strong subjects (can be reviewed quickly): ${strongSubjects.join(", ")}.
   Preferred study pattern: ${pattern}.
   Timetable duration: ${duration}.
-  Study Mode: ${studyMode === 'exam' ? 'Exam Focus (Prioritize most important/exam-relevant topics from syllabus)' : 'Mastery Mode (Focus deeply on one topic at a time for complete understanding)'}.
+  Study Mode: ${studyMode === "exam" ? "Exam Focus (Prioritize most important/exam-relevant topics from syllabus)" : "Mastery Mode (Focus deeply on one topic at a time for complete understanding)"}.
   ${focusSubject ? `Today's special focus: ${focusSubject}.` : ""}
   The student's preferred language is "${language}".
   
@@ -84,18 +89,22 @@ export async function generateTimetable(
             time: { type: Type.STRING },
             activity: { type: Type.STRING },
             tip: { type: Type.STRING },
-            moodAlign: { type: Type.BOOLEAN }
+            moodAlign: { type: Type.BOOLEAN },
           },
-          required: ["time", "activity", "tip", "moodAlign"]
-        }
-      }
+          required: ["time", "activity", "tip", "moodAlign"],
+        },
+      },
     },
   });
 
   return JSON.parse(response.text);
 }
 
-export async function generateFlashcards(subject: string, concept: string, language: string = 'English') {
+export async function generateFlashcards(
+  subject: string,
+  concept: string,
+  language: string = "English",
+) {
   const prompt = `Create 5 study flashcards for the concept "${concept}" in the subject "${subject}".
   The student's preferred language is "${language}".
   Each flashcard should have a "concept" (the question or term) and an "explanation" (the answer or definition).
@@ -114,18 +123,22 @@ export async function generateFlashcards(subject: string, concept: string, langu
           type: Type.OBJECT,
           properties: {
             concept: { type: Type.STRING },
-            explanation: { type: Type.STRING }
+            explanation: { type: Type.STRING },
           },
-          required: ["concept", "explanation"]
-        }
-      }
+          required: ["concept", "explanation"],
+        },
+      },
     },
   });
 
   return JSON.parse(response.text);
 }
 
-export async function generateQuiz(subject: string, concept: string, language: string = 'English') {
+export async function generateQuiz(
+  subject: string,
+  concept: string,
+  language: string = "English",
+) {
   const prompt = `Create a 5-question multiple-choice quiz for the concept "${concept}" in the subject "${subject}".
   The student's preferred language is "${language}".
   Each question should have "question", "options" (array of 4 strings), and "answer" (the correct option string).
@@ -144,11 +157,11 @@ export async function generateQuiz(subject: string, concept: string, language: s
           properties: {
             question: { type: Type.STRING },
             options: { type: Type.ARRAY, items: { type: Type.STRING } },
-            answer: { type: Type.STRING }
+            answer: { type: Type.STRING },
           },
-          required: ["question", "options", "answer"]
-        }
-      }
+          required: ["question", "options", "answer"],
+        },
+      },
     },
   });
 

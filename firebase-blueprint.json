@@ -14,7 +14,10 @@
         "studyPattern": { "type": "string" },
         "currentMood": { "type": "string" },
         "preferredLanguage": { "type": "string" },
-        "timetableDuration": { "type": "string", "enum": ["daily", "weekly", "monthly"] },
+        "timetableDuration": {
+          "type": "string",
+          "enum": ["daily", "weekly", "monthly"]
+        },
         "streak": { "type": "integer" },
         "lastStudyDate": { "type": "string", "format": "date-time" },
         "lastActive": { "type": "string", "format": "date-time" }
@@ -42,9 +45,9 @@
         "userId": { "type": "string" },
         "subject": { "type": "string" },
         "concept": { "type": "string" },
-        "questions": { 
-          "type": "array", 
-          "items": { 
+        "questions": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
               "question": { "type": "string" },
@@ -151,7 +154,10 @@
       "type": "object",
       "properties": {
         "userId": { "type": "string" },
-        "type": { "type": "string", "enum": ["flashcards", "quiz", "focusTime", "sessions"] },
+        "type": {
+          "type": "string",
+          "enum": ["flashcards", "quiz", "focusTime", "sessions"]
+        },
         "target": { "type": "integer" },
         "current": { "type": "integer" },
         "period": { "type": "string", "enum": ["daily", "weekly"] },

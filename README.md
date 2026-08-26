@@ -1,20 +1,33 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# StudyFlow
 
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/176580dc-867e-4279-850d-7e778673b09a
+StudyFlow is a React and Firebase study companion with focus sessions, planning,
+wellbeing tools, analytics, and an AI assistant.
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+Prerequisites: Node.js
 
+1. Install dependencies: `npm install`
+2. Add `GEMINI_API_KEY` to `.env.local`.
+3. Start the app: `npm run dev`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Project Structure
+
+```text
+src/
+   components/
+      assistant/   AI assistant features
+      layout/      App shell and profile settings
+      shared/      Reusable UI components
+      study/       Timers, planning, history, and analytics
+      wellbeing/   Mood, balance, motivation, and mindfulness features
+   lib/           AI, translations, sound, and experiment helpers
+   App.tsx        Application composition and routing state
+   firebase.ts    Firebase services and data operations
+```
+
+## Scripts
+
+- `npm run dev` starts the Vite development server.
+- `npm run lint` runs the TypeScript check.
+- `npm run build` creates the production bundle.
